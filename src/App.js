@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
-// import { useMediaQuery, useTheme } from '@mui/material';
 import CardContainer from './CardContainer';
 import Search from './Search';
-import { fetchProfiles } from './api';
+import { fetchProfiles, createProfile, updateProfile, deleteProfile, getProfileById } from './api';
 import { Card, CardHeader, CardContent, Avatar, Menu, MenuItem, Modal } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { MoreVert, Verified } from '@mui/icons-material';
 import Typography from '@mui/material/Typography';
 
 const App = () => {
-  // const theme = useTheme();
-  // const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [profiles, setProfiles] = useState([]);
+  const [moreOptions, setMoreOptions] = useState(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [editProfileData, setEditProfileData] = useState(null);
+  const [updatedProfileData, setUpdatedProfileData] = useState(editProfileData);
 
 
   useEffect(() => {
@@ -25,11 +28,79 @@ const App = () => {
     fetchProfilesFromAPI();
   }, []);
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditProfileData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleClickMenu = (event) => {
+    setMoreOptions(event.currentTarget);
+  };
+
+  const handleCloseMenu = () => {
+    setMoreOptions(null);
+  };
+  const handleCloseEditModal = () => {
+    setEditModalOpen(false); // Close the edit modal
+  };
+
+
+  const [createProfileData, setCreateProfileData] = useState({
+    imageUrl: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    description: '',
+    isVerified: false
+  });
+
+  const handleCreateProfile = async () => {
+
+    try {
+      const response = await createProfile(createProfileData);
+      console.log('Profile created successfully:', response);
+    } catch (error) {
+      console.error('Failed to create profile:', error);
+    }
+  };
+
+  const handleUpdateProfile = async (id) => {
+    try {
+      const profile = await getProfileById(id);
+      setEditProfileData({ ...profile });
+      setEditModalOpen(true);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (editProfileData) {
+      setUpdatedProfileData(editProfileData);
+    }
+  }, [editProfileData]);
+
+  const handleUpdateProfileSubmit = async () => {
+    try {
+      await updateProfile(editProfileData.id, updatedProfileData);
+      setEditModalOpen(false);
+      setUpdatedProfileData(null);
+      setEditProfileData(null);
+      setProfiles(profiles.filter((profile) => profile.id !== editProfileData.id));
+      console.log('Profile updated successfully:', updatedProfileData);
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    }
+  };
+
   return (
     <div>
       <Search />
       <CardContainer>
-        {profiles.map((profile, index) => {
+        {profiles.map((profile) => {
           const { id, first_name, last_name, email, is_verified, image_url, description } = profile;
           return (
             <Card
@@ -40,7 +111,7 @@ const App = () => {
                   <Avatar src={image_url} />
                 }
                 action={
-                  <IconButton aria-label="More Options">
+                  <IconButton aria-label="More Options" onClick={handleClickMenu}>
                     <MoreVert />
                   </IconButton>
                 }
@@ -68,10 +139,57 @@ const App = () => {
                   {description}
                 </Typography>
               </CardContent>
+              <Menu
+                anchorEl={moreOptions}
+                open={Boolean(moreOptions)}
+                onClose={handleCloseMenu}
+              >
+                <MenuItem onClick={() => handleUpdateProfile(id)}>Edit profile</MenuItem>
+                {/* <MenuItem onClick={() => handleDeleteProfile(id)}>Delete profile</MenuItem> */}
+              </Menu>
             </Card>
           );
         })}
       </CardContainer>
+      {editModalOpen && (
+        <Modal open={editModalOpen} onClose={handleCloseEditModal}>
+          {editProfileData && (
+            <div>
+              <input
+                type="text"
+                name="first_name"
+                value={editProfileData.first_name || ''}
+                onChange={handleInputChange}
+              />
+              <input
+                type="text"
+                name="last_name"
+                value={editProfileData.last_name || ''}
+                onChange={handleInputChange}
+              />
+              <input
+                type="text"
+                name="email"
+                value={editProfileData.email || ''}
+                onChange={handleInputChange}
+              />
+              <input
+                type="text"
+                name="image_url"
+                value={editProfileData.image_url || ''}
+                onChange={handleInputChange}
+              />
+              <input
+                type="text"
+                name="description"
+                value={editProfileData.description || ''}
+                onChange={handleInputChange}
+              />
+              <button onClick={handleUpdateProfileSubmit}>Update Profile</button>
+            </div>
+          )}
+        </Modal>
+      )}
     </div>
   );
 };
