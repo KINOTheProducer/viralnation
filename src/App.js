@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import CardContainer from './CardContainer';
 import Search from './Search';
 import { fetchProfiles, createProfile, updateProfile, deleteProfile, getProfileById } from './api';
-import { Card, CardHeader, CardContent, Avatar, Menu, MenuItem, Modal } from '@mui/material';
+import { Card, CardHeader, CardContent, Avatar, Menu, MenuItem, Modal, Box, Divider, FormControlLabel, Switch, TextField, Button } from '@mui/material';
+import Grid from '@mui/material/Unstable_Grid2';
 import IconButton from '@mui/material/IconButton';
-import { MoreVert, Verified } from '@mui/icons-material';
+import { MoreVert, Verified, Close } from '@mui/icons-material';
 import Typography from '@mui/material/Typography';
 
 const App = () => {
@@ -153,45 +154,137 @@ const App = () => {
       </CardContainer>
       {editModalOpen && (
         <Modal open={editModalOpen} onClose={handleCloseEditModal}>
-          {editProfileData && (
-            <div>
-              <input
-                type="text"
-                name="first_name"
-                value={editProfileData.first_name || ''}
-                onChange={handleInputChange}
-              />
-              <input
-                type="text"
-                name="last_name"
-                value={editProfileData.last_name || ''}
-                onChange={handleInputChange}
-              />
-              <input
-                type="text"
-                name="email"
-                value={editProfileData.email || ''}
-                onChange={handleInputChange}
-              />
-              <input
-                type="text"
-                name="image_url"
-                value={editProfileData.image_url || ''}
-                onChange={handleInputChange}
-              />
-              <input
-                type="text"
-                name="description"
-                value={editProfileData.description || ''}
-                onChange={handleInputChange}
-              />
-              <button onClick={handleUpdateProfileSubmit}>Update Profile</button>
-            </div>
-          )}
+          <div
+            style={{
+              backgroundColor: 'white',
+              boxShadow: '1px 1px 4px rgba(0, 0, 0, 0.1)',
+              borderRadius: '2px',
+              padding: '20px',
+              width: '500px',
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {editProfileData && (
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="h6" style={{ flexGrow: 1 }}>
+                      Edit Profile
+                    </Typography>
+                    <IconButton
+                      onClick={handleCloseEditModal}
+                      style={{ marginLeft: 'auto' }}
+                    >
+                      <Close />
+                    </IconButton>
+                  </div>
+                  <hr
+                    style={{
+                      marginTop: '8px',
+                      marginBottom: '16px',
+                      border: 'none',
+                      borderBottom: '1px solid #ccc',
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Image Link"
+                    name="image_url"
+                    value={editProfileData.image_url || ''}
+                    onChange={handleInputChange}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="First Name"
+                    name="first_name"
+                    value={editProfileData.first_name || ''}
+                    onChange={handleInputChange}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Last Name"
+                    name="last_name"
+                    value={editProfileData.last_name || ''}
+                    onChange={handleInputChange}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Email"
+                    name="email"
+                    value={editProfileData.email || ''}
+                    onChange={handleInputChange}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Description"
+                    name="description"
+                    value={editProfileData.description || ''}
+                    onChange={handleInputChange}
+                    multiline
+                    rows={4}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <div
+                    style={{
+                      backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                      borderRadius: '4px',
+                      padding: '8px',
+                      display: 'flex',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Typography variant="body2" style={{ marginRight: 'auto' }}>
+                      {editProfileData.isVerified ? 'Talent is verified' : 'Talent is not verified'}
+                    </Typography>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={editProfileData.isVerified}
+                          onChange={(e) =>
+                            setEditProfileData((prevData) => ({
+                              ...prevData,
+                              isVerified: e.target.checked,
+                            }))
+                          }
+                        />
+                      }
+                    />
+                  </div>
+                </Grid>
+                <Grid item xs={12} justifyContent="flex-end">
+                  <Box display="flex" justifyContent="flex-end">
+                    <Button variant="contained" onClick={handleUpdateProfileSubmit}>
+                      Update Profile
+                    </Button>
+                  </Box>
+                </Grid>
+              </Grid>
+            )}
+          </div>
         </Modal>
-      )}
+      )
+      }
     </div>
   );
-};
+}
+
 
 export default App;
