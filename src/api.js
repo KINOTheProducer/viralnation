@@ -23,7 +23,7 @@ query GetAllProfiles($orderBy: globalOrderBy, $searchString: String, $rows: Int,
         key: 'is_verified',
         sort: 'desc',
       },
-      rows: 25
+      rows: 16
     }
   });
 
@@ -46,8 +46,116 @@ query GetAllProfiles($orderBy: globalOrderBy, $searchString: String, $rows: Int,
   }
 };
 
-export const createProfile = async (profileData) => {
-  const { firstName, lastName, email, isVerified, imageUrl, description } = profileData;
+export const deleteProfile = async (deleteProfileId) => {
+  const requestBody = JSON.stringify({
+    query: `
+      mutation DeleteProfile($deleteProfileId: String!) {
+        deleteProfile(id: $deleteProfileId)
+      }
+    `,
+    variables: {
+      deleteProfileId,
+    },
+  });
+
+  try {
+    const response = await fetch('https://api.poc.graphql.dev.vnplatform.com/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authKey,
+      },
+      body: requestBody,
+    });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error deleting profile:', error);
+    return null;
+  }
+};
+
+// export const createProfile = async (profileData) => {
+//   const { firstName, lastName, email, isVerified, imageUrl, description } = profileData;
+//   try {
+//     const response = await fetch('https://api.poc.graphql.dev.vnplatform.com/graphql', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': `${authKey}`,
+//       },
+//       body: JSON.stringify({
+//         query: `
+//           mutation CreateProfile($firstName: String!, $lastName: String!, $email: String!, $isVerified: Boolean!, $imageUrl: String!, $description: String!) {
+//             createProfile(first_name: $firstName, last_name: $lastName, email: $email, is_verified: $isVerified, image_url: $imageUrl, description: $description) {
+//               id
+//               first_name
+//               last_name
+//               email
+//               is_verified
+//               image_url
+//               description
+//             }
+//           }
+//         `,
+//         variables: {
+//           firstName,
+//           lastName,
+//           email,
+//           isVerified,
+//           imageUrl,
+//           description,
+//         },
+//       }),
+//     });
+
+//     const data = await response.json();
+//     return data;
+//   } catch (error) {
+//     console.error('Error creating profile:', error);
+//     throw error;
+//   }
+// };
+
+// export const getProfileById = async (getProfileByIdId) => {
+//   try {
+//     const response = await fetch(`https://api.poc.graphql.dev.vnplatform.com/graphql`, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': `${authKey}`,
+//       },
+//       body: JSON.stringify({
+//         query: `
+//         query GetProfileById($getProfileByIdId: String!) {
+//           getProfileById(id: $getProfileByIdId) {
+//             id
+//             first_name
+//             last_name
+//             email
+//             is_verified
+//             image_url
+//             description
+//           }
+//         }
+//         `,
+//         variables: {
+//           getProfileByIdId,
+//         },
+//       }),
+//     });
+
+//     const data = await response.json();
+//     console.log(data.data.getProfileById)
+//     return data.data.getProfileById;
+//   } catch (error) {
+//     console.error('Error fetching profile data:', error);
+//     return null;
+//   }
+// };
+
+export const updateProfile = async (editProfileData) => {
   try {
     const response = await fetch('https://api.poc.graphql.dev.vnplatform.com/graphql', {
       method: 'POST',
@@ -57,49 +165,8 @@ export const createProfile = async (profileData) => {
       },
       body: JSON.stringify({
         query: `
-          mutation CreateProfile($firstName: String!, $lastName: String!, $email: String!, $isVerified: Boolean!, $imageUrl: String!, $description: String!) {
-            createProfile(first_name: $firstName, last_name: $lastName, email: $email, is_verified: $isVerified, image_url: $imageUrl, description: $description) {
-              id
-              first_name
-              last_name
-              email
-              is_verified
-              image_url
-              description
-            }
-          }
-        `,
-        variables: {
-          firstName,
-          lastName,
-          email,
-          isVerified,
-          imageUrl,
-          description,
-        },
-      }),
-    });
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error creating profile:', error);
-    throw error;
-  }
-};
-
-export const getProfileById = async (getProfileByIdId) => {
-  try {
-    const response = await fetch(`https://api.poc.graphql.dev.vnplatform.com/graphql`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `${authKey}`,
-      },
-      body: JSON.stringify({
-        query: `
-        query GetProfileById($getProfileByIdId: String!) {
-          getProfileById(id: $getProfileByIdId) {
+        mutation UpdateProfile($updateProfileId: String!, $firstName: String!, $lastName: String!, $email: String!, $isVerified: Boolean!, $imageUrl: String!, $description: String!) {
+          updateProfile(id: $updateProfileId, first_name: $firstName, last_name: $lastName, email: $email, is_verified: $isVerified, image_url: $imageUrl, description: $description) {
             id
             first_name
             last_name
@@ -111,50 +178,13 @@ export const getProfileById = async (getProfileByIdId) => {
         }
         `,
         variables: {
-          getProfileByIdId,
-        },
-      }),
-    });
-
-    const data = await response.json();
-    console.log(data)
-    return data.data.getProfileById;
-  } catch (error) {
-    console.error('Error fetching profile data:', error);
-    return null;
-  }
-};
-
-export const updateProfile = async (id, firstName, lastName, email, isVerified, imageUrl, description) => {
-  try {
-    const response = await fetch('https://api.poc.graphql.dev.vnplatform.com/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `${authKey}`,
-      },
-      body: JSON.stringify({
-        query: `
-          mutation UpdateProfile($updateProfileId: String!, $firstName: String!, $lastName: String!, $email: String!, $isVerified: Boolean!, $imageUrl: String!, $description: String!) {
-            updateProfile(id: $updateProfileId, first_name: $firstName, last_name: $lastName, email: $email, is_verified: $isVerified, image_url: $imageUrl, description: $description) {
-              id
-              first_name
-              last_name
-              email
-              is_verified
-              image_url
-              description
-            }
-          }
-        `,
-        variables: {
-          updateProfileId: id,
-          firstName,
-          lastName,
-          email,
-          isVerified,
-          imageUrl,
-          description,
+          updateProfileId: editProfileData.id,
+          firstName: editProfileData.first_name,
+          lastName: editProfileData.last_name,
+          email: editProfileData.email,
+          isVerified: editProfileData.is_verified,
+          imageUrl: editProfileData.image_url,
+          description: editProfileData.description,
         },
       }),
     });
@@ -166,3 +196,4 @@ export const updateProfile = async (id, firstName, lastName, email, isVerified, 
     throw error;
   }
 };
+
