@@ -3,20 +3,28 @@ const authKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYW5kaWRhdGVfbmFtZSI6Ik
 export const fetchProfiles = async () => {
   const requestBody = JSON.stringify({
     query: `
-          query {
-            getAllProfiles {
-              profiles {
-                id
-                first_name
-                last_name
-                email
-                is_verified
-                image_url
-                description
-              }
-            }
-          }
-        `
+query GetAllProfiles($orderBy: globalOrderBy, $searchString: String, $rows: Int, $page: Int) {
+  getAllProfiles(orderBy: $orderBy, searchString: $searchString, rows: $rows, page: $page) {
+    size
+    profiles {
+      id
+      first_name
+      last_name
+      email
+      is_verified
+      image_url
+      description
+    }
+  }
+}
+        `,
+    variables: {
+      orderBy: {
+        key: 'is_verified',
+        sort: 'desc',
+      },
+      rows: 25
+    }
   });
 
   try {

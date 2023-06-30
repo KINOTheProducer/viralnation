@@ -15,8 +15,6 @@ const App = () => {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [editProfileData, setEditProfileData] = useState(null);
-  const [updatedProfileData, setUpdatedProfileData] = useState(editProfileData);
-
 
   useEffect(() => {
     const fetchProfilesFromAPI = async () => {
@@ -44,8 +42,10 @@ const App = () => {
   const handleCloseMenu = () => {
     setMoreOptions(null);
   };
+
   const handleCloseEditModal = () => {
-    setEditModalOpen(false); // Close the edit modal
+    setEditModalOpen(false);
+    setEditProfileData(null);
   };
 
 
@@ -70,32 +70,35 @@ const App = () => {
 
   const handleUpdateProfile = async (id) => {
     try {
+      console.log(id);
       const profile = await getProfileById(id);
+      console.log(profile)
       setEditProfileData({ ...profile });
+      console.log(editProfileData);
       setEditModalOpen(true);
     } catch (error) {
       console.error('Error updating profile:', error);
     }
   };
 
-  useEffect(() => {
-    if (editProfileData) {
-      setUpdatedProfileData(editProfileData);
-    }
-  }, [editProfileData]);
-
   const handleUpdateProfileSubmit = async () => {
     try {
-      await updateProfile(editProfileData.id, updatedProfileData);
+      await updateProfile(editProfileData.id, editProfileData);
       setEditModalOpen(false);
-      setUpdatedProfileData(null);
       setEditProfileData(null);
-      setProfiles(profiles.filter((profile) => profile.id !== editProfileData.id));
-      console.log('Profile updated successfully:', updatedProfileData);
+      setProfiles((prevProfiles) =>
+        prevProfiles.map((profile) => {
+          if (profile.id === editProfileData.id) {
+            return editProfileData;
+          }
+          return profile;
+        })
+      );
     } catch (error) {
       console.error('Error updating profile:', error);
     }
   };
+
 
   return (
     <div>
@@ -244,7 +247,7 @@ const App = () => {
                 <Grid item xs={12}>
                   <div
                     style={{
-                      backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                      backgroundColor: 'rgba(0, 0, 0, 0.15)',
                       borderRadius: '4px',
                       padding: '8px',
                       display: 'flex',
