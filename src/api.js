@@ -46,36 +46,6 @@ query GetAllProfiles($orderBy: globalOrderBy, $searchString: String, $rows: Int,
   }
 };
 
-export const deleteProfile = async (deleteProfileId) => {
-  const requestBody = JSON.stringify({
-    query: `
-      mutation DeleteProfile($deleteProfileId: String!) {
-        deleteProfile(id: $deleteProfileId)
-      }
-    `,
-    variables: {
-      deleteProfileId,
-    },
-  });
-
-  try {
-    const response = await fetch('https://api.poc.graphql.dev.vnplatform.com/graphql', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: authKey,
-      },
-      body: requestBody,
-    });
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error deleting profile:', error);
-    return null;
-  }
-};
-
 // export const createProfile = async (profileData) => {
 //   const { firstName, lastName, email, isVerified, imageUrl, description } = profileData;
 //   try {
@@ -197,3 +167,30 @@ export const updateProfile = async (editProfileData) => {
   }
 };
 
+export const deleteProfile = async (deleteProfileData) => {
+  try {
+    const response = await fetch('https://api.poc.graphql.dev.vnplatform.com/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `${authKey}`,
+      },
+      body: JSON.stringify({
+        query: `
+        mutation DeleteProfile($deleteProfileId: String!) {
+          deleteProfile(id: $deleteProfileId)
+        }
+        `,
+        variables: {
+          deleteProfileId: deleteProfileData.id,
+        },
+      }),
+    });
+
+    const data = await response.json();
+    return data.data.updateProfile;
+  } catch (error) {
+    console.error('Error deleting profile:', error);
+    throw error;
+  }
+};

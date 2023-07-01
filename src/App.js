@@ -7,23 +7,28 @@ import {
   CardHeader,
   CardContent,
   Avatar,
-  Menu,
-  MenuItem,
+  // Menu,
+  // MenuItem,
   Modal,
   Box,
   FormControlLabel,
   Switch,
   TextField,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
 } from '@mui/material';
-import Grid from '@mui/material/Unstable_Grid2';
 import IconButton from '@mui/material/IconButton';
 import { MoreVert, Verified, Close, ModeEdit, DeleteForever } from '@mui/icons-material';
 import Typography from '@mui/material/Typography';
 
 const App = () => {
   const [profiles, setProfiles] = useState([]);
-  const [moreOptions, setMoreOptions] = useState(null);
+  // const [moreOptions, setMoreOptions] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editProfileData, setEditProfileData] = useState(null);
   const [deleteProfileData, setDeleteProfileData] = useState(null);
@@ -91,7 +96,7 @@ const App = () => {
   // Delete Profile
   const openDeleteModal = async () => {
     try {
-      await deleteProfile(deleteProfileData.id);
+      await deleteProfile(deleteProfileData);
       setProfiles((prevProfiles) => prevProfiles.filter((profile) => profile.id !== deleteProfileData.id));
       setDeleteConfirmationOpen(false);
       setDeleteProfileData(null);
@@ -106,7 +111,7 @@ const App = () => {
 
   const handleDeleteProfile = (profile) => {
     setDeleteProfileData(profile);
-    setDeleteConfirmationOpen();
+    setDeleteConfirmationOpen(true);
   };
 
 
@@ -127,7 +132,7 @@ const App = () => {
                     <IconButton aria-label="Edit Profile" onClick={() => openEditModal(profile)}>
                       <ModeEdit />
                     </IconButton>
-                    <IconButton aria-label="Delete Profile" onClick={() => openDeleteModal(profile)}>
+                    <IconButton aria-label="Delete Profile" onClick={() => handleDeleteProfile(profile)}>
                       <DeleteForever />
                     </IconButton>
                   </>
@@ -152,8 +157,48 @@ const App = () => {
           );
         })}
       </CardContainer>
+      <Dialog open={deleteConfirmationOpen} onClose={closeDeleteModal}
+        style={{
+          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <DialogTitle
+          style={{
+            borderBottom: '1px #e0e0e0 solid',
+          }}>Remove Profile</DialogTitle>
+        <DialogContent style={{
+          borderRadius: '2px',
+          padding: '20px',
+          width: '400px',
+          display: 'flex',
+          flexDirection: 'column',
+        }}>
+          <DialogContentText>
+            Removed profile will be deleted permanently and won't be available anymore.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions
+          style={{
+            borderTop: '1px #e0e0e0 solid',
+          }}>
+          <Button onClick={closeDeleteModal} sx={{ color: "black", backgroundColor: '#cccccc' }} variant="contained">
+            Cancel
+          </Button>
+          <Button onClick={openDeleteModal} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
       {editModalOpen && editProfileData && (
-        <Modal open={openEditModal} onClose={closeEditModal} className='modal'>
+        <Modal open={editModalOpen} onClose={closeEditModal} className='modal'>
           <div
             style={{
               backgroundColor: 'white',
@@ -264,6 +309,14 @@ const App = () => {
                     }
                   />
                 </div>
+                <hr
+                  style={{
+                    marginTop: '16px',
+                    marginBottom: '8px',
+                    border: 'none',
+                    borderBottom: '1px solid #ccc',
+                  }}
+                />
               </Grid>
               <Grid item xs={12} justifyContent="flex-end">
                 <Box display="flex" justifyContent="flex-end">
@@ -273,27 +326,6 @@ const App = () => {
                 </Box>
               </Grid>
             </Grid>
-            <Modal open={deleteConfirmationOpen} onClose={closeDeleteModal}>
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  backgroundColor: 'white',
-                  boxShadow: '1px 1px 4px rgba(0, 0, 0, 0.1)',
-                  borderRadius: '2px',
-                  padding: '20px',
-                }}
-              >
-                <Typography variant="h6">Remove Profile</Typography>
-                <Typography variant="body1">Removed profile will be deleted permanently and won't be available anymore</Typography>
-                <Button onClick={closeDeleteModal}>Cancel</Button>
-                <Button onClick={handleDeleteProfile} color="error" variant="contained">
-                  Delete
-                </Button>
-              </div>
-            </Modal>
           </div>
         </Modal>
       )}
