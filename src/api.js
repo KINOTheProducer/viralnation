@@ -33,6 +33,7 @@ query GetAllProfiles($orderBy: globalOrderBy, $searchString: String, $rows: Int,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `${authKey}`,
+        'mode': 'no-cors',
       },
       body: requestBody
     });
