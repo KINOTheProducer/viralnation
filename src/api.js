@@ -30,10 +30,11 @@ query GetAllProfiles($orderBy: globalOrderBy, $searchString: String, $rows: Int,
   try {
     const response = await fetch('https://api.poc.graphql.dev.vnplatform.com/graphql', {
       method: 'POST',
+      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `${authKey}`,
-        'mode': 'no-cors',
+        'Access-Control-Allow-Origin': "https://api.poc.graphql.dev.vnplatform.com/graphql"
       },
       body: requestBody
     });
