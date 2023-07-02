@@ -30,7 +30,7 @@ const darkTheme = createTheme({
 const lightTheme = createTheme({
     palette: lightPalette,
     typography: {
-        fontFamily: 'Arial, sans-serif',
+        fontFamily: 'Roboto, sans-serif',
     },
 });
 

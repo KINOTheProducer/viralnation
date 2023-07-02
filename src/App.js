@@ -22,10 +22,12 @@ import {
   DialogTitle,
   Grid,
   CssBaseline,
-  ThemeProvider
+  ThemeProvider,
+  Stack,
+  Container
 } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import { MoreVert, Verified, Close, ModeEdit, DeleteForever, LightMode, DarkMode } from '@mui/icons-material';
+import { MoreVert, Verified, Close, ModeEdit, DeleteForever } from '@mui/icons-material';
 import Typography from '@mui/material/Typography';
 import { lightTheme, darkTheme } from './theme';
 import Navbar from './Navbar';
@@ -141,6 +143,7 @@ const App = () => {
           minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column',
+          paddingTop: '100px'
         }}
       >
         <Search />
@@ -194,13 +197,23 @@ const App = () => {
             justifyContent: 'center',
           }}
         >
-          <DialogTitle
-            style={{
-              borderBottom: '1px #e0e0e0 solid',
-            }}>Remove Profile</DialogTitle>
+          <DialogTitle style={{
+            borderBottom: currentTheme === 'dark' ? '1px #2B2B2B solid' : '1px #e0e0e0 solid',
+            display: 'flex',
+            alignItems: 'center'
+          }}>
+            <span style={{ flex: 1 }}>Remove Profile</span>
+            <IconButton
+              aria-label="Close"
+              onClick={closeDeleteModal}
+              style={{ marginLeft: 'auto' }}
+            >
+              <Close />
+            </IconButton>
+          </DialogTitle>
           <DialogContent style={{
-            borderRadius: '2px',
-            padding: '20px',
+            borderBottom: currentTheme === 'dark' ? '1px #2B2B2B solid' : '1px #e0e0e0 solid',
+            padding: '25px',
             width: '400px',
             display: 'flex',
             flexDirection: 'column',
@@ -209,26 +222,55 @@ const App = () => {
               Removed profile will be deleted permanently and won't be available anymore.
             </DialogContentText>
           </DialogContent>
-          <DialogActions
-            style={{
-              borderTop: '1px #e0e0e0 solid',
-            }}>
-            <Button onClick={closeDeleteModal} sx={{ color: "black", backgroundColor: '#cccccc' }} variant="contained">
-              Cancel
-            </Button>
-            <Button onClick={openDeleteModal} color="error" variant="contained">
-              Delete
-            </Button>
+          <DialogActions>
+            <Stack
+              direction="row"
+              spacing={1}
+              justifyContent="center"
+              alignItems="center"
+              sx={{ width: '100%', py: 1.5 }}
+            >
+              <Button
+                onClick={closeDeleteModal}
+                sx={{
+                  color: currentTheme === 'light' ? 'black' : 'white', // Change text color based on current theme
+                  backgroundColor: currentTheme === 'light' ? '#EEEEEE' : 'rgba(255, 255, 255, 0.05)', // Change background color based on current theme
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '5%',
+                  textTransform: 'capitalize',
+                  width: '45%',
+                  height: '32px',
+                  margin: '0',
+                }}
+                variant="contained"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={openDeleteModal}
+                color="error"
+                variant="contained"
+                sx={{
+                  borderRadius: '5%',
+                  textTransform: 'capitalize',
+                  width: '45%',
+                  height: '32px',
+                  margin: '0',
+                }}
+              >
+                Delete
+              </Button>
+            </Stack>
           </DialogActions>
         </Dialog>
         {editModalOpen && editProfileData && (
           <Modal open={editModalOpen} onClose={closeEditModal} className='modal'>
             <div
               style={{
-                backgroundColor: 'white',
+                backgroundColor: currentTheme === 'dark' ? theme.palette.background.paper : 'white',
                 boxShadow: '1px 1px 4px rgba(0, 0, 0, 0.1)',
                 borderRadius: '2px',
-                padding: '20px',
+
                 width: '500px',
                 position: 'fixed',
                 top: '50%',
@@ -242,109 +284,126 @@ const App = () => {
             >
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography variant="h6" style={{ flexGrow: 1 }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '20px',
+                    paddingBottom: '20px',
+                    borderBottom: currentTheme === 'dark' ? '1px #2B2B2B solid' : '1px #e0e0e0 solid'
+                  }}>
+                    <Typography variant="h6" style={{ flexGrow: 1, fontWeight: 'semibold' }}>
                       Edit Profile
                     </Typography>
-                    <IconButton onClick={closeEditModal} style={{ marginLeft: 'auto' }}>
+                    <IconButton onClick={closeEditModal} style={{
+                      marginLeft: 'auto'
+                    }}>
                       <Close />
                     </IconButton>
                   </div>
-                  <hr
-                    style={{
-                      marginTop: '8px',
-                      marginBottom: '16px',
-                      border: 'none',
-                      borderBottom: '1px solid #ccc',
-                    }}
-                  />
                 </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Image Link"
-                    name="image_url"
-                    value={editProfileData.image_url || ''}
-                    onChange={handleInputChange}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    label="First Name"
-                    name="first_name"
-                    value={editProfileData.first_name || ''}
-                    onChange={handleInputChange}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    label="Last Name"
-                    name="last_name"
-                    value={editProfileData.last_name || ''}
-                    onChange={handleInputChange}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Email"
-                    name="email"
-                    value={editProfileData.email || ''}
-                    onChange={handleInputChange}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Description"
-                    name="description"
-                    value={editProfileData.description || ''}
-                    onChange={handleInputChange}
-                    multiline
-                    rows={4}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <div
-                    style={{
-                      backgroundColor: 'rgba(0, 0, 0, 0.15)',
-                      borderRadius: '4px',
-                      padding: '8px',
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Typography variant="body2" style={{ marginRight: 'auto' }}>
-                      {editProfileData.is_verified ? 'Talent is verified' : 'Talent is not verified'}
-                    </Typography>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={editProfileData.is_verified}
-                          onChange={(e) =>
-                            setEditProfileData((prevData) => ({
-                              ...prevData,
-                              is_verified: e.target.checked,
-                            }))
-                          }
-                        />
-                      }
+                <Grid container spacing={2}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingTop: '30px',
+                    paddingRight: '23px',
+                    paddingLeft: '37px',
+                    paddingBottom: '10px',
+                  }}>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Image Link"
+                      name="image_url"
+                      value={editProfileData.image_url || ''}
+                      onChange={handleInputChange}
+                      fullWidth
                     />
-                  </div>
-                  <hr
-                    style={{
-                      marginTop: '16px',
-                      marginBottom: '8px',
-                      border: 'none',
-                      borderBottom: '1px solid #ccc',
-                    }}
-                  />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      label="First Name"
+                      name="first_name"
+                      value={editProfileData.first_name || ''}
+                      onChange={handleInputChange}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      label="Last Name"
+                      name="last_name"
+                      value={editProfileData.last_name || ''}
+                      onChange={handleInputChange}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Email"
+                      name="email"
+                      value={editProfileData.email || ''}
+                      onChange={handleInputChange}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Description"
+                      name="description"
+                      value={editProfileData.description || ''}
+                      onChange={handleInputChange}
+                      multiline
+                      rows={4}
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <div
+                      style={{
+                        backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                        borderRadius: '4px',
+                        padding: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Typography variant="body2" style={{
+                        marginRight: 'auto'
+                      }}>
+                        {editProfileData.is_verified ? 'Talent is verified' : 'Talent is not verified'}
+                      </Typography>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={editProfileData.is_verified}
+                            onChange={(e) =>
+                              setEditProfileData((prevData) => ({
+                                ...prevData,
+                                is_verified: e.target.checked,
+                              }))
+                            }
+                          />
+                        }
+                      />
+                    </div>
+                  </Grid>
                 </Grid>
                 <Grid item xs={12} justifyContent="flex-end">
-                  <Box display="flex" justifyContent="flex-end">
-                    <Button variant="contained" onClick={handleUpdateProfileSubmit}>
+                  <Box display="flex" padding={'20px'} justifyContent="flex-end"
+                    style={{ borderTop: currentTheme === 'dark' ? '1px #2B2B2B solid' : '1px #e0e0e0 solid', }}>
+                    <Button
+                      variant="contained"
+                      onClick={handleUpdateProfileSubmit}
+                      sx={{
+                        color: 'white',
+                        textTransform: 'capitalize',
+                        fontWeight: 'bold',
+
+                      }}
+                    >
                       Update Profile
                     </Button>
                   </Box>

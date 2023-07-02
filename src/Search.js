@@ -16,7 +16,7 @@ const Search = ({ onSearch }) => {
         onSearch(searchValue);
     };
 
-    const searchWidth = isMobile ? '70vw' : '500px';
+    const searchWidth = isMobile ? '70vw' : '60vw';
 
     return (
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
