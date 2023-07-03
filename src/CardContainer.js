@@ -6,13 +6,15 @@ const CardContainer = ({ children }) => {
         <Grid
             container
             justifyContent="center"
-            paddingTop={5}
-            paddingX={{ xs: 2, sm: 4, md: 2 }}
+            paddingTop={3}
             spacing={3}
             sx={{
                 width: { xs: '100vw', sm: '80vw' },
-                maxWidth: '1800px',
+                maxWidth: { xs: '90vw', sm: '90vw' },
+                alignItems: 'center',
                 margin: '0 auto',
+                paddingLeft: { xs: 0, sm: 2 },
+                paddingRight: { xs: '20px', sm: 2 },
             }}
         >
             {React.Children.map(children, (child) => (

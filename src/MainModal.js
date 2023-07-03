@@ -53,7 +53,7 @@ const MainModal = ({
                         boxShadow: '1px 1px 4px rgba(0, 0, 0, 0.1)',
                         borderRadius: '2px',
                         height: '100vh',
-                        width: isMobile ? '100vw' : '500px',
+                        width: isMobile ? '100vw' : '768px',
                         right: 0,
                         position: 'fixed',
                         animation: `${slideInAnimation} 1s forwards`,
@@ -133,6 +133,7 @@ const MainModal = ({
                                 <TextField
                                     label="Description"
                                     name="description"
+                                    placeholder='Write a description for the talent'
                                     value={modalType === 'edit' ? editProfileData.description : createProfileData.description}
                                     onChange={modalType === 'edit' ? handleInputChange : handleCreateInputChange}
                                     multiline
@@ -144,7 +145,7 @@ const MainModal = ({
                             <Grid item xs={12}>
                                 <div
                                     style={{
-                                        backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                                        backgroundColor: currentTheme === 'light' ? '#eeeeee' : '#2b2b2b',
                                         borderRadius: '4px',
                                         padding: '8px',
                                         display: 'flex',

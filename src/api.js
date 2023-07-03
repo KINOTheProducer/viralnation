@@ -1,6 +1,6 @@
 const authKey = process.env.REACT_APP_VN_AUTH;
 
-export const fetchProfiles = async (searchValue) => {
+export const fetchProfiles = async (searchValue, currentPage) => {
   const requestBody = JSON.stringify({
     query: `
 query GetAllProfiles($orderBy: globalOrderBy, $searchString: String, $rows: Int, $page: Int) {
@@ -24,6 +24,7 @@ query GetAllProfiles($orderBy: globalOrderBy, $searchString: String, $rows: Int,
         sort: 'desc',
       },
       searchString: searchValue,
+      page: currentPage,
       rows: 16,
     }
   });
@@ -37,8 +38,17 @@ query GetAllProfiles($orderBy: globalOrderBy, $searchString: String, $rows: Int,
       },
       body: requestBody
     });
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
+
     const data = await response.json();
-    const profiles = data.data.getAllProfiles.profiles
+
+    if (!data.data || !data.data.getAllProfiles) {
+      throw new Error('Invalid response format');
+    }
+
+    const profiles = data.data.getAllProfiles.profiles;
     return profiles;
   } catch (error) {
     console.error('Error fetching data:', error);

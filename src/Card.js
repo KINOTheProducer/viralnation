@@ -1,14 +1,16 @@
 import { React, useState } from 'react';
 import { Card, CardHeader, Avatar, IconButton, Typography, CardContent, Menu, MenuItem, useTheme } from '@mui/material';
 import { MoreVert } from '@mui/icons-material';
-import Verified from '@mui/icons-material/Verified';
-
-
+import Verified from './assets/verified.png';
 
 const ProfileCard = ({ profile, openEditModal, openDeleteModal }) => {
     const [anchorEl, setAnchorEl] = useState(null);
 
     const theme = useTheme();
+
+    const VerifiedIcon = () => {
+        return <img src={Verified} alt="Verified Icon" />;
+    };
 
     const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -33,22 +35,36 @@ const ProfileCard = ({ profile, openEditModal, openDeleteModal }) => {
     return (
         <Card key={id}
             style={{
+                overflow: 'hidden',
                 resize: 'both',
-                overflow: 'auto',
                 backgroundColor: theme.palette.mode === 'light' ? '#eeeeee' : 'inherit',
+                height: '255px',
+                justifyContent: 'center',
+                alignItems: 'center',
             }}
         >
+
             <CardHeader
                 avatar={<Avatar src={image_url} />}
+                sx={{
+                    position: 'relative',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
                 action={
                     <>
                         <IconButton
                             aria-label="More Options"
                             onClick={handleMenuOpen}
-                            style={{
+                            sx={{
                                 position: 'sticky',
                                 top: 0,
                                 zIndex: 1,
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
                             }}>
                             <MoreVert />
                         </IconButton>
@@ -64,20 +80,25 @@ const ProfileCard = ({ profile, openEditModal, openDeleteModal }) => {
                     </>
                 }
                 title={
-                    <Typography variant="h6" fontWeight="bold">
-                        {is_verified === true ? (
-                            <span>
-                                {`${first_name} ${last_name}`} <Verified />
-                            </span>
-                        ) : (
-                            `${first_name} ${last_name}`
-                        )}
+                    <Typography variant="h6" fontWeight="bold" sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden',
+                        gap: '5px',
+                    }}>
+
+                        {`${first_name} ${last_name}`}
+                        {is_verified === true && <VerifiedIcon />}
                     </Typography>
                 }
-                subheader={<Typography variant="subtitle1">{email}</Typography>}
+                subheader={<Typography variant="subtitle1" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                    {email}
+                </Typography>}
             />
-            <CardContent style={{ overflow: 'hidden' }}>
-                <Typography variant="body2" style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+
+            <CardContent>
+                <Typography variant="body2">
                     {description}
                 </Typography>
             </CardContent>

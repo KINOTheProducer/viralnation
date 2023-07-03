@@ -1,9 +1,9 @@
 import React from 'react';
 import { TextField, Box } from '@mui/material';
 
-const Search = ({ onSearch, isMobile, handleSearchChange }) => {
+const Search = ({ isMobile, handleSearchChange }) => {
 
-    const searchWidth = isMobile ? '70vw' : '60vw';
+    const searchWidth = isMobile ? '78vw' : '68vw';
 
     return (
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
