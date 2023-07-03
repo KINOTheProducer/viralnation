@@ -1,20 +1,14 @@
 import { React, useState } from 'react';
-import { Card, CardHeader, Avatar, IconButton, Typography, CardContent, Menu, MenuItem } from '@mui/material';
-import { ModeEdit, DeleteForever, MoreVert } from '@mui/icons-material';
+import { Card, CardHeader, Avatar, IconButton, Typography, CardContent, Menu, MenuItem, useTheme } from '@mui/material';
+import { MoreVert } from '@mui/icons-material';
 import Verified from '@mui/icons-material/Verified';
+
 
 
 const ProfileCard = ({ profile, openEditModal, openDeleteModal }) => {
     const [anchorEl, setAnchorEl] = useState(null);
-    // const [cardWidth, setCardWidth] = useState('');
-    // const [cardHeight, setCardHeight] = useState('');
 
-    // const handleResize = (e) => {
-    //     const newWidth = `${e.target.offsetWidth}px`;
-    //     const newHeight = `${e.target.offsetHeight}px`;
-    //     // setCardWidth(newWidth);
-    //     // setCardHeight(newHeight);
-    // }
+    const theme = useTheme();
 
     const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -38,7 +32,11 @@ const ProfileCard = ({ profile, openEditModal, openDeleteModal }) => {
 
     return (
         <Card key={id}
-            style={{ resize: 'both', overflow: 'auto' }}
+            style={{
+                resize: 'both',
+                overflow: 'auto',
+                backgroundColor: theme.palette.mode === 'light' ? '#eeeeee' : 'inherit',
+            }}
         >
             <CardHeader
                 avatar={<Avatar src={image_url} />}
@@ -66,7 +64,7 @@ const ProfileCard = ({ profile, openEditModal, openDeleteModal }) => {
                     </>
                 }
                 title={
-                    <Typography variant="h6">
+                    <Typography variant="h6" fontWeight="bold">
                         {is_verified === true ? (
                             <span>
                                 {`${first_name} ${last_name}`} <Verified />

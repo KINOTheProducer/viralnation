@@ -1,36 +1,20 @@
-import React, { useState } from 'react';
-import { TextField, useMediaQuery, useTheme, Box } from '@mui/material';
+import React from 'react';
+import { TextField, Box } from '@mui/material';
 
-const Search = ({ onSearch }) => {
-    const [searchValue, setSearchValue] = useState('');
-
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-    const handleSearchChange = (event) => {
-        setSearchValue(event.target.value);
-    };
-
-    const handleSearchSubmit = (event) => {
-        event.preventDefault();
-        onSearch(searchValue);
-    };
+const Search = ({ onSearch, isMobile, handleSearchChange }) => {
 
     const searchWidth = isMobile ? '70vw' : '60vw';
 
     return (
         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <form onSubmit={handleSearchSubmit}>
-                <TextField
-                    id="search"
-                    label="Search"
-                    variant="outlined"
-                    value={searchValue}
-                    onChange={handleSearchChange}
-                    size="small"
-                    sx={{ width: searchWidth }}
-                />
-            </form>
+            <TextField
+                id="search"
+                label="Search"
+                variant="outlined"
+                onChange={handleSearchChange}
+                size="small"
+                sx={{ width: searchWidth }}
+            />
         </Box>
     );
 };

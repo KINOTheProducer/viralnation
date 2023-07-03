@@ -9,171 +9,197 @@ import {
     FormControlLabel,
     Switch,
     Box,
+    Slide,
 } from '@mui/material';
 import { Close } from '@mui/icons-material';
+import { keyframes } from '@emotion/react';
+
+
+const slideInAnimation = keyframes`
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+`;
 
 const MainModal = ({
     modalOpen,
     closeModal,
     modalTitle,
+    modalType,
+    setCreateProfileData,
+    createProfileData,
     setEditProfileData,
     editProfileData,
     handleInputChange,
+    handleCreateInputChange,
     handleSubmit,
     currentTheme,
-    theme
+    theme,
+    isMobile
 }) => {
-    return (
-        <Modal open={modalOpen} onClose={closeModal} className='modal'>
-            <div
-                style={{
-                    backgroundColor: currentTheme === 'dark' ? theme.palette.background.paper : 'white',
-                    boxShadow: '1px 1px 4px rgba(0, 0, 0, 0.1)',
-                    borderRadius: '2px',
 
-                    width: '500px',
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <div
-                            style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                padding: '20px',
-                                paddingBottom: '20px',
-                                borderBottom: currentTheme === 'dark' ? '1px #2B2B2B solid' : '1px #e0e0e0 solid',
-                            }}
-                        >
-                            <Typography variant="h6" style={{ flexGrow: 1, fontWeight: 'semibold' }}>
-                                {modalTitle}
-                            </Typography>
-                            <IconButton onClick={closeModal} style={{ marginLeft: 'auto' }}>
-                                <Close />
-                            </IconButton>
-                        </div>
-                    </Grid>
-                    <Grid
-                        container
-                        spacing={2}
-                        style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            paddingTop: '30px',
-                            paddingRight: '23px',
-                            paddingLeft: '37px',
-                            paddingBottom: '10px',
-                        }}
-                    >
-                        <Grid item xs={12}>
-                            <TextField
-                                label="Image Link"
-                                name="image_url"
-                                value={modalTitle === 'Edit Profile' ? editProfileData.image_url : ''}
-                                onChange={handleInputChange}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                label="First Name"
-                                name="first_name"
-                                value={modalTitle === 'Edit Profile' ? editProfileData.first_name : ''}
-                                onChange={handleInputChange}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                label="Last Name"
-                                name="last_name"
-                                value={modalTitle === 'Edit Profile' ? editProfileData.last_name : ''}
-                                onChange={handleInputChange}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                label="Email"
-                                name="email"
-                                value={modalTitle === 'Edit Profile' ? editProfileData.email : ''}
-                                onChange={handleInputChange}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                label="Description"
-                                name="description"
-                                value={modalTitle === 'Edit Profile' ? editProfileData.description : ''}
-                                onChange={handleInputChange}
-                                multiline
-                                rows={4}
-                                fullWidth
-                            />
-                        </Grid>
+
+
+    return (
+        <Modal open={modalOpen} onClose={closeModal} className='modal' disablePortal>
+            <Slide direction="left" in={modalOpen}>
+                <div
+                    className="modal-content"
+                    style={{
+                        backgroundColor: currentTheme === 'dark' ? theme.palette.background.paper : 'white',
+                        boxShadow: '1px 1px 4px rgba(0, 0, 0, 0.1)',
+                        borderRadius: '2px',
+                        height: '100vh',
+                        width: isMobile ? '100vw' : '500px',
+                        right: 0,
+                        position: 'fixed',
+                        animation: `${slideInAnimation} 1s forwards`,
+                    }}
+                >
+                    <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <div
                                 style={{
-                                    backgroundColor: 'rgba(0, 0, 0, 0.12)',
-                                    borderRadius: '4px',
-                                    padding: '8px',
                                     display: 'flex',
                                     alignItems: 'center',
+                                    justifyContent: 'center',
+                                    padding: '20px',
+                                    paddingBottom: '20px',
+                                    borderBottom: currentTheme === 'dark' ? '1px #2B2B2B solid' : '1px #e0e0e0 solid',
                                 }}
                             >
-                                <Typography variant="body2" style={{ marginRight: 'auto' }}>
-                                    {modalTitle === 'Edit Profile' ? (editProfileData.is_verified ? 'Talent is verified' : 'Talent is not verified') : ''}
+                                <Typography variant="h6" style={{ flexGrow: 1, fontWeight: 'semibold' }}>
+                                    {modalTitle}
                                 </Typography>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={modalTitle === 'Edit Profile' ? editProfileData.is_verified : false}
-                                            onChange={(e) =>
-                                                setEditProfileData((prevData) => ({
-                                                    ...prevData,
-                                                    is_verified: e.target.checked,
-                                                }))
-                                            }
-                                        />
-                                    }
-                                />
+                                <IconButton onClick={closeModal} style={{ marginLeft: 'auto' }}>
+                                    <Close />
+                                </IconButton>
                             </div>
                         </Grid>
-                    </Grid>
-                    <Grid item xs={12} justifyContent="flex-end">
-                        <Box
-                            display="flex"
-                            padding={'20px'}
-                            justifyContent="flex-end"
-                            style={{ borderTop: currentTheme === 'dark' ? '1px #2B2B2B solid' : '1px #e0e0e0 solid' }}
+                        <Grid
+                            container
+                            spacing={2}
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                paddingTop: '30px',
+                                paddingRight: '23px',
+                                paddingLeft: '37px',
+                                paddingBottom: '10px',
+                            }}
                         >
-                            <Button
-                                variant="contained"
-                                onClick={handleSubmit}
-                                sx={{
-                                    color: 'white',
-                                    textTransform: 'capitalize',
-                                    fontWeight: 'bold',
-                                }}
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Image Link"
+                                    name="image_url"
+                                    value={modalType === 'edit' ? editProfileData.image_url : createProfileData.image_url}
+                                    onChange={modalType === 'edit' ? handleInputChange : handleCreateInputChange}
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="First Name"
+                                    name="first_name"
+                                    value={modalType === 'edit' ? editProfileData.first_name : createProfileData.first_name}
+                                    onChange={modalType === 'edit' ? handleInputChange : handleCreateInputChange}
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="Last Name"
+                                    name="last_name"
+                                    value={modalType === 'edit' ? editProfileData.last_name : createProfileData.last_name}
+                                    onChange={modalType === 'edit' ? handleInputChange : handleCreateInputChange}
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Email"
+                                    name="email"
+                                    value={modalType === 'edit' ? editProfileData.email : createProfileData.email}
+                                    onChange={modalType === 'edit' ? handleInputChange : handleCreateInputChange}
+                                    fullWidth
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Description"
+                                    name="description"
+                                    value={modalType === 'edit' ? editProfileData.description : createProfileData.description}
+                                    onChange={modalType === 'edit' ? handleInputChange : handleCreateInputChange}
+                                    multiline
+                                    rows={4}
+                                    fullWidth
+                                />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <div
+                                    style={{
+                                        backgroundColor: 'rgba(0, 0, 0, 0.12)',
+                                        borderRadius: '4px',
+                                        padding: '8px',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <Typography variant="body2" style={{ marginRight: 'auto' }}>
+                                        {modalType === 'edit' ? (editProfileData.is_verified ? 'Talent is verified' : 'Talent is not verified') : (createProfileData.is_verified ? 'Talent is verified' : 'Talent is not verified')}
+                                    </Typography>
+                                    <FormControlLabel
+                                        control={
+                                            <Switch
+                                                checked={modalType === 'edit' ? editProfileData.is_verified : createProfileData.is_verified}
+                                                onChange={(e) => {
+                                                    if (modalType === 'edit') {
+                                                        setEditProfileData((prevData) => ({
+                                                            ...prevData,
+                                                            is_verified: e.target.checked,
+                                                        }));
+                                                    } else if (modalType === 'create') {
+                                                        setCreateProfileData((prevData) => ({
+                                                            ...prevData,
+                                                            is_verified: e.target.checked,
+                                                        }));
+                                                    }
+                                                }}
+                                            />
+                                        }
+                                    />
+                                </div>
+                            </Grid>
+                        </Grid>
+                        <Grid item xs={12} justifyContent="flex-end">
+                            <Box
+                                display="flex"
+                                padding={'20px'}
+                                justifyContent="flex-end"
+                                style={{ borderTop: currentTheme === 'dark' ? '1px #2B2B2B solid' : '1px #e0e0e0 solid' }}
                             >
-                                {modalTitle === 'Create Profile' ? 'Create Profile' : 'Update Profile'}
-                            </Button>
-                        </Box>
+                                <Button
+                                    variant="contained"
+                                    onClick={handleSubmit}
+                                    sx={{
+                                        color: 'white',
+                                        textTransform: 'capitalize',
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    {modalTitle === 'Create Profile' ? 'Create Profile' : 'Update Profile'}
+                                </Button>
+                            </Box>
+                        </Grid>
                     </Grid>
-                </Grid>
-            </div>
+                </div>
+            </Slide>
         </Modal>
     );
 };

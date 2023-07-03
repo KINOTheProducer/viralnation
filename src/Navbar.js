@@ -3,14 +3,6 @@ import { Switch, FormControlLabel } from '@mui/material';
 import { LightMode, DarkMode } from '@mui/icons-material';
 import styled from 'styled-components';
 
-const NavbarContainer = styled('div')({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: '10px',
-    backgroundColor: '#f5f5f5',
-});
-
 const SwitchContainer = styled('div')({
     display: 'flex',
     alignItems: 'center',
@@ -32,7 +24,7 @@ function Navbar({ currentTheme, toggleTheme }) {
                 display: 'flex',
                 justifyContent: 'space-between',
                 padding: '10px',
-                backgroundColor: currentTheme === 'light' ? '#FCFCFD' : '#181818',
+                backgroundColor: currentTheme === 'light' ? '#ffffff' : '#181818',
                 color: currentTheme === 'light' ? '#000000' : '#ffffff',
                 zIndex: 1000,
             }}
